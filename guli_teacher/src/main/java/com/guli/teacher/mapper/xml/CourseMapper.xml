@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guli.teacher.mapper.CourseMapper">
+
+        <!-- FrontCourseVO retrieveFrontCourseVOByCourseId(String courseId); -->
+    <select id="retrieveFrontCourseVOByCourseId" parameterType="java.lang.String"
+        resultType="com.guli.teacher.entity.vo.resp.FrontCourseVO">
+        SELECT
+            ec.id,
+            ec.title,
+            convert(ec.price, decimal(8, 2)) AS price,
+            ec.lesson_num as lessonNum,
+            ec.cover,
+            ec.buy_count as buyCount,
+            ec.view_count as viewCount,
+            ed.description,
+
+            et.id as teacherId,
+            et.name as teacherName,
+            et.intro,
+            et.avatar,
+
+            es1.id as subjectLevelOneId,
+            es1.title as subjectLevelOne,
+            es2.id as subjectLevelTwoId,
+            es2.title as subjectLevelTwo
+        FROM
+            edu_course ec
+            left join edu_course_description ed on ec.id = ed.id
+            left join edu_teacher et on ec.teacher_id = et.id
+            left join edu_subject es1 on ec.subject_parent_id = es1.id
+            left join edu_subject es2 on ec.subject_id = es2.id
+        WHERE
+            ec.id = #{courseId}
+    </select>
+
+    <!-- CoursePublishVO getCoursePublishVOById(String id); -->
+    <select id="getCoursePublishVOById" parameterType="java.lang.String"
+        resultType="com.guli.teacher.entity.vo.resp.CoursePublishVO">
+        SELECT
+        ec.id,
+        ec.title,
+        CONVERT(ec.price, DECIMAL(8,2)) as price,
+        ec.cover,
+        ec.lesson_num,
+        es1.title as subject_parent_title,
+        es2.title as subject_title,
+        et.`name` as teacher_name
+        FROM
+        edu_course ec
+        LEFT JOIN edu_teacher et on ec.teacher_id = et.id
+        LEFT JOIN edu_subject es1 on ec.subject_parent_id = es1.id
+        LEFT JOIN edu_subject es2 on ec.subject_id = es2.id
+        WHERE
+        ec.id = #{courseId}
+    </select>
+
+</mapper>
